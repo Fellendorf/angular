@@ -1,13 +1,27 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { CarApiService } from './services/car-api.service';
+import { ChildComponent } from './components/child/child.component';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  template: `
+    <h2>Parent Component</h2>
+    <p>This is a name from a parent component: <br />{{ parentName }}</p>
+    <button (click)="parentName = 'PARENT NAME'">Change parent name</button>
+    <hr />
+    <app-child [(name)]="parentName" />
+  `,
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  title = 'ed-car-catalog-angular';
+  constructor(private readonly carApiService: CarApiService) {}
+
+  public parentName = 'PARENT NAME';
+
+  ngOnInit() {
+    this.carApiService.getCarList().subscribe({
+      next: (response) => console.log('response', response),
+      error: (error) => console.log('error', error),
+    });
+  }
 }
